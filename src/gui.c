@@ -348,7 +348,7 @@ void term_gui(gui* g)
     fsout(stdout, "Exiting gui\n");
 
     /* Clean everything up. */
-//    TTF_DestroyText(g->t);
+    TTF_DestroyText(g->t);
     TTF_DestroyRendererTextEngine(g->te);
     SDL_DestroyRenderer(g->r);
     SDL_DestroyWindow(g->w);
