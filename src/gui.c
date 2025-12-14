@@ -252,31 +252,31 @@ gui* init_gui()
     /* Initialise SDL_ttf. */
     if (TTF_Init())
     {
-        fsout(stdout, "SDL_ttf initialisation success\n");
+        fsout(stdout, "TTF initialisation success\n");
     }
     else
     {
-        fsout(stdout, "SDL_ttf initialisation failure: %s\n", SDL_GetError());
+        fsout(stdout, "TTF initialisation failure: %s\n", SDL_GetError());
     }
 
     /* Create an SDL3 text engine. */
     if ((g->te = TTF_CreateRendererTextEngine(g->r)) != NULL)
     {
-        fsout(stdout, "SDL text engine creation success\n");
+        fsout(stdout, "TTF text engine creation success\n");
     }
     else
     {
-        fsout(stdout, "SDL text engine creation failure: %s\n", SDL_GetError());
+        fsout(stdout, "TTF text engine creation failure: %s\n", SDL_GetError());
     }
 
     /* Open a font. */
     if ((g->f = TTF_OpenFont("/home/richard/.local/share/fonts/inconsolata/Inconsolata-Regular.ttf", 30)) != NULL)
     {
-        fsout(stdout, "SDL font opening success\n");
+        fsout(stdout, "TTF font opening success\n");
     }
     else
     {
-        fsout(stdout, "SDL font opening failure: %s\n", SDL_GetError());
+        fsout(stdout, "TTF font opening failure: %s\n", SDL_GetError());
     }
         
     /* Create some text. */
