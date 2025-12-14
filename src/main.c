@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
         SDL_RenderPresent(renderer);
     }
 
+    printf("Cleaning up\n");
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 

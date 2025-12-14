@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build/hello
+./build/sdl3_template
