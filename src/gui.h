@@ -18,8 +18,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdarg.h>
-#include <time.h>
+
+#include "utils.h"
+#include "text.h"
 
 /**
  * This is the gui data structure.
@@ -29,14 +30,14 @@ typedef struct gui_data {
     SDL_Renderer* r;
     SDL_Event* e;
     TTF_TextEngine* te;
-    TTF_Text* t;
     TTF_Font* f;
+    bool use_ttf;
 } gui;
 
 /**
  * This function returns an intialised gui.
  */
-gui* init_gui();
+gui* init_gui(int w, int h, bool use_ttf);
 
 /**
  * This function runs the gui supplied to it.

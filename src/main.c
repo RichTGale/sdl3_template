@@ -16,7 +16,7 @@
 int main(int argc, char *argv[])
 {
     /* Create and initialise a gui. */
-    gui* g = init_gui();
+    gui* g = init_gui(1250, 720, true);
 
     /* Run the gui. */
     exec_gui(g);
