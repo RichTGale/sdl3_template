@@ -249,6 +249,56 @@ gui* init_gui()
         fsout(stdout, "Create renderer failure: %s\n", SDL_GetError());
     }
 
+    /* Initialise SDL_ttf. */
+    if (TTF_Init())
+    {
+        fsout(stdout, "SDL_ttf initialisation success\n");
+    }
+    else
+    {
+        fsout(stdout, "SDL_ttf initialisation failure: %s\n", SDL_GetError());
+    }
+
+    /* Create an SDL3 text engine. */
+    if ((g->te = TTF_CreateRendererTextEngine(g->r)) != NULL)
+    {
+        fsout(stdout, "SDL text engine creation success\n");
+    }
+    else
+    {
+        fsout(stdout, "SDL text engine creation failure: %s\n", SDL_GetError());
+    }
+
+    /* Open a font. */
+    if ((g->f = TTF_OpenFont("/home/richard/.local/share/fonts/inconsolata/Inconsolata-Regular.ttf", 30)) != NULL)
+    {
+        fsout(stdout, "SDL font opening success\n");
+    }
+    else
+    {
+        fsout(stdout, "SDL font opening failure: %s\n", SDL_GetError());
+    }
+        
+    /* Create some text. */
+    if ((g->t = TTF_CreateText(g->te, g->f, "Click the mouse to exit", 0)) != NULL)
+    {
+        fsout(stdout, "TTF text creation success\n");
+    }
+    else
+    {
+        fsout(stdout, "TTf text creation failure: %s\n", SDL_GetError());
+    }
+
+    /* Change text colour. */
+    if (TTF_SetTextColor(g->t, 255, 255, 255, 255))
+    {
+        fsout(stdout, "TTF text colour change success\n");
+    }
+    else
+    {
+        fsout(stdout, "TTF text colur change failure: %s\n", SDL_GetError());
+    }
+
     /* Return the gui. */
     return g;
 }
@@ -277,9 +327,12 @@ gui* exec_gui(gui* g)
 	        }
 	    }
 
+
         /* Render the program. */
 	    SDL_RenderClear(g->r);
+        TTF_DrawRendererText(g->t, 400, 300);
 	    SDL_RenderPresent(g->r);
+
     }
 
     /* Return the gui. */
@@ -295,6 +348,8 @@ void term_gui(gui* g)
     fsout(stdout, "Exiting gui\n");
 
     /* Clean everything up. */
+//    TTF_DestroyText(g->t);
+    TTF_DestroyRendererTextEngine(g->te);
     SDL_DestroyRenderer(g->r);
     SDL_DestroyWindow(g->w);
     SDL_Quit();
