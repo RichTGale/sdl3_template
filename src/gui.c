@@ -1,3 +1,13 @@
+/**
+ * gui.c
+ *
+ * This file contains the function definitions for the gui library.
+ * The gui library is a graphical application that uses SDL3.
+ *
+ * Date written was 14 December 2025
+ * Written by Richard Gale..
+ */
+
 #include "gui.h"
 
 /**
@@ -201,12 +211,15 @@ void fsout(FILE* fs, char *fmt, ...)
     free(buf);
 }
 
-
-
+/**
+ * This function returns an intialised gui.
+ */
 gui* init_gui()
 {
+    /* Allocate memory. */
     gui* g = (gui*) malloc(sizeof(struct gui_data));
 
+    /* Initialise SDL3. */
     if (SDL_Init(SDL_INIT_VIDEO))
     {
         fsout(stdout, "SDL init success\n");
@@ -216,6 +229,7 @@ gui* init_gui()
         fsout(stdout, "SDL init failure: %s\n", SDL_GetError());
     }
 
+    /* Create an SDL3 window. */
     if ((g->w = SDL_CreateWindow("mywindow", 1250, 720, 0)) != NULL)
     {
         fsout(stdout, "SDL window creation success\n");
@@ -225,6 +239,7 @@ gui* init_gui()
         fsout(stdout, "SDL window creation failure: %s\n", SDL_GetError());
     }
 
+    /* Create an SDL3 renderer. */
     if ((g->r = SDL_CreateRenderer(g->w, NULL)) != NULL)
     {
         fsout(stdout, "SDL renderer creation success\n");
@@ -234,35 +249,52 @@ gui* init_gui()
         fsout(stdout, "Create renderer failure: %s\n", SDL_GetError());
     }
 
+    /* Return the gui. */
     return g;
 }
 
+/**
+ * This function runs the gui supplied to it.
+ */
 gui* exec_gui(gui* g)
 {
-    SDL_Event event;
-    bool running = true;
+    SDL_Event event; // Stores input
+    bool running = true; // Whether the program should be running.
 
+    /* Run the program. */
     while (running)
     {
+        /* Store input events. */
 	    while(SDL_PollEvent(&event))
 	    {
+            /* Determine what type of event happened. */
 	        switch (event.type)
 	        {
+                /* Exit the program if the mouse button is released. */
 	            case SDL_EVENT_MOUSE_BUTTON_UP:
 	                running = false;
 	                break;
 	        }
 	    }
+
+        /* Render the program. */
 	    SDL_RenderClear(g->r);
 	    SDL_RenderPresent(g->r);
     }
 
+    /* Return the gui. */
     return g;
 }
 
+/**
+ * This function cleans up and exits the gui supplied to it.
+ */
 void term_gui(gui* g)
 {
+    /* Print status message. */
     fsout(stdout, "Exiting gui\n");
+
+    /* Clean everything up. */
     SDL_DestroyRenderer(g->r);
     SDL_DestroyWindow(g->w);
     SDL_Quit();
