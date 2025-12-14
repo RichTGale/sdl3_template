@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdarg.h>
+#include <time.h>
+
 
 typedef struct gui_data {
     SDL_Window* w;
