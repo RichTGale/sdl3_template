@@ -27,6 +27,7 @@
  */
 typedef struct gui_data {
     SDL_Window* w;
+    SDL_GPUDevice* gpu;
     SDL_Renderer* r;
     SDL_Event* e;
     TTF_TextEngine* te;
@@ -37,7 +38,12 @@ typedef struct gui_data {
 /**
  * This function returns an intialised gui.
  */
-gui* init_gui(int w, int h, bool use_ttf);
+gui* init_gui(int w, int h);
+
+/**
+ * This function initialises SDL_ttf.
+ */
+gui* init_ttf(gui* g);
 
 /**
  * This function runs the gui supplied to it.

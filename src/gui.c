@@ -11,6 +11,51 @@
 #include "gui.h"
 
 
+
+/**
+ * This function returns an intialised gui.
+ */
+gui* init_gui(int w, int h)
+{
+    /* Allocate memory. */
+    gui* g = (gui*) malloc(sizeof(struct gui_data));
+
+    /* Initialise SDL3. */
+    if (SDL_Init(SDL_INIT_VIDEO))
+    {
+        fsout(stdout, "SDL init success\n");
+    }
+    else
+    {
+        fsout(stdout, "SDL init failure: %s\n", SDL_GetError());
+    }
+
+    /* Create an SDL3 window. */
+    if ((g->w = SDL_CreateWindow("mywindow", w, h, 0)) != NULL)
+    {
+        fsout(stdout, "SDL window creation success\n");
+    }
+    else
+    {
+        fsout(stdout, "SDL window creation failure: %s\n", SDL_GetError());
+    }
+
+    /* Create an SDL3 renderer. */
+    if ((g->r = SDL_CreateRenderer(g->w, NULL)) != NULL)
+    {
+        fsout(stdout, "SDL software renderer creation success\n");
+    }
+    else
+    {
+        fsout(stdout, "Create software renderer failure: %s\n", SDL_GetError());
+    }
+
+    g->use_ttf = false;
+
+    /* Return the gui. */
+    return g;
+}
+
 /**
  * This function initialises SDL_ttf.
  */
@@ -46,57 +91,11 @@ gui* init_ttf(gui* g)
         fsout(stdout, "TTF font opening failure: %s\n", SDL_GetError());
     }
 
-    /* Return the gui. */
-    return g;
-}
-
-/**
- * This function returns an intialised gui.
- */
-gui* init_gui(int w, int h, bool use_ttf)
-{
-    /* Allocate memory. */
-    gui* g = (gui*) malloc(sizeof(struct gui_data));
-
-    /* Initialise SDL3. */
-    if (SDL_Init(SDL_INIT_VIDEO))
-    {
-        fsout(stdout, "SDL init success\n");
-    }
-    else
-    {
-        fsout(stdout, "SDL init failure: %s\n", SDL_GetError());
-    }
-
-    /* Create an SDL3 window. */
-    if ((g->w = SDL_CreateWindow("mywindow", w, h, 0)) != NULL)
-    {
-        fsout(stdout, "SDL window creation success\n");
-    }
-    else
-    {
-        fsout(stdout, "SDL window creation failure: %s\n", SDL_GetError());
-    }
-
-    /* Create an SDL3 renderer. */
-    if ((g->r = SDL_CreateRenderer(g->w, NULL)) != NULL)
-    {
-        fsout(stdout, "SDL renderer creation success\n");
-    }
-    else
-    {
-        fsout(stdout, "Create renderer failure: %s\n", SDL_GetError());
-    }
-
-    /* Determine if SDL_ttf should be initialised. */
-    if ((g->use_ttf = use_ttf))
-        /* Initialise SDL_ttf. */
-        g = init_ttf(g);
+    g->use_ttf = true;
 
     /* Return the gui. */
     return g;
 }
-
 
 
 /**
