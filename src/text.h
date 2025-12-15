@@ -10,10 +10,11 @@
 #include "utils.h"
 
 typedef struct text_data {
-    TTF_Text* t;    
+    TTF_Text* t;
+    TTF_Font* f;
 } text;
 
-text* init_text(TTF_TextEngine* te, TTF_Font* f, char* txt, int r, int g, int b, int a);
+text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, int b, int a);
 
 bool draw_text(text* t);
 

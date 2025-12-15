@@ -1,14 +1,21 @@
 #include "text.h"
 
-text* init_text(TTF_TextEngine* te, TTF_Font* f, char* txt, int r, int g, int b, int a)
+text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, int b, int a)
 {
     text* t = (text*) malloc(sizeof(struct text_data));
+    
+    /* Open a font. */
+    if ((t->f = TTF_OpenFont(font_path, 30)) == NULL)
+    {
+        fsout(stdout, "TTF font opening failure: %s\n", SDL_GetError());
+    }
 
     /* Create some text. */
-    if ((t->t = TTF_CreateText(te, f, txt, 0)) == NULL)
+    if ((t->t = TTF_CreateText(te, t->f, txt, 0)) == NULL)
     {
         fsout(stdout, "TTf text creation failure: %s\n", SDL_GetError());
     }
+
 	
     /* Cghange the text colour. */
     if (!TTF_SetTextColor(t->t, r, g, b, a))
@@ -34,4 +41,5 @@ bool draw_text(text* t)
 void term_text(text* t)
 {
     TTF_DestroyText(t->t);
+    TTF_CloseFont(t->f);
 }

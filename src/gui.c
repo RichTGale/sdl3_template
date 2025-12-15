@@ -81,16 +81,6 @@ gui* init_ttf(gui* g)
         fsout(stdout, "TTF text engine creation failure: %s\n", SDL_GetError());
     }
 
-    /* Open a font. */
-    if ((g->f = TTF_OpenFont("/home/richard/.local/share/fonts/inconsolata/Inconsolata-Regular.ttf", 30)) != NULL)
-    {
-        fsout(stdout, "TTF font opening success\n");
-    }
-    else
-    {
-        fsout(stdout, "TTF font opening failure: %s\n", SDL_GetError());
-    }
-
     g->use_ttf = true;
 
     /* Return the gui. */
@@ -125,7 +115,7 @@ gui* exec_gui(gui* g)
 
         if (g->use_ttf)
         {
-            t = init_text(g->te, g->f, "Click the mouse to exit.", 255, 255, 255, 255);
+            t = init_text(g->te, "./fonts/Inconsolata-Regular.ttf", "Click the mouse to exit.", 255, 255, 255, 255);
         }
 
         /* Render the program. */
