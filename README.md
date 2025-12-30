@@ -4,3 +4,5 @@
 <ul>
   <li>Uncomment dependenciesin `install.sh`</li>
 </ul>
+<br />
+`install.sh`
