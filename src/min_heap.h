@@ -89,7 +89,7 @@
 #include <stdint.h>
 
 #include "array.h"
-#include "rendor_target.h"
+#include "render_target.h"
 
 /**
  * The min_heap data structure.

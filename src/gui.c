@@ -50,7 +50,7 @@ gui* init_gui(int w, int h)
 
     g->use_ttf = false;
 
-    min_heap_init(&(g->rendor_targets));
+    min_heap_init(&(g->render_targets));
 
     /* Return the gui. */
     return g;
@@ -94,13 +94,13 @@ gui* init_ttf(gui* g)
 gui* exec_gui(gui* g)
 {
     SDL_Event event; // Stores input
-    rendor_target* test_image;
-    rendor_target* test_text;
+    render_target* test_image;
+    render_target* test_text;
     bool running = true; // Whether the program should be running.
-        
-    /* TODO: make each rendor_target a property of the gui. */
-    test_image = init_rendor_target(g->r, g->te, RENDOR_TARGET_IMAGE, 0);
-    test_text  = init_rendor_target(g->r, g->te, RENDOR_TARGET_TEXT, 1);
+    
+    /* TODO: make each render_target a property of the gui. */
+    test_image = init_render_target_image(g->r, 0, "./img/test.jpg");
+    test_text  = init_render_target_text(g->te, 1, "./fonts/Inconsolata-Regular.ttf", "Click the mouse to exit.");
 
     /* Run the program. */
     while (running)
@@ -119,31 +119,29 @@ gui* exec_gui(gui* g)
 	    }
 
     
-	    if (!min_heap_val_exists(g->rendor_targets, (void*) test_image))
+	    if (!min_heap_val_exists(g->render_targets, (void*) test_image))
 	    {
-	        min_heap_add(&(g->rendor_targets), (void*) test_image);
+	        min_heap_add(&(g->render_targets), (void*) test_image);
 	    }
-	    if (!min_heap_val_exists(g->rendor_targets, (void*) test_text))
+	    if (!min_heap_val_exists(g->render_targets, (void*) test_text))
 	    {
-	        min_heap_add(&(g->rendor_targets), (void*) test_text);
+	        min_heap_add(&(g->render_targets), (void*) test_text);
 	    }
 
         /* Render the program. */
         SDL_RenderClear(g->r);
 
-        while (!min_heap_is_empty(g->rendor_targets))
+        while (!min_heap_is_empty(g->render_targets))
         {
-            show_rendor_target(g->r, (rendor_target*) min_heap_pop_min(&(g->rendor_targets)));
+            show_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
         }
 
-	    
         SDL_RenderPresent(g->r);
-        
 
     }
         
-    term_rendor_target(test_image);
-    term_rendor_target(test_text);
+    term_render_target(test_image);
+    term_render_target(test_text);
 
     /* Return the gui. */
     return g;
@@ -155,7 +153,7 @@ gui* exec_gui(gui* g)
 void term_gui(gui* g)
 {
 
-    min_heap_free(&(g->rendor_targets));
+    min_heap_free(&(g->render_targets));
 
     /* Clean everything up. */
     if (g->use_ttf)
