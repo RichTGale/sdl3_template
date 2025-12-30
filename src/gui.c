@@ -96,11 +96,13 @@ gui* exec_gui(gui* g)
     SDL_Event event; // Stores input
     render_target* test_image;
     render_target* test_text;
+    char* txt;
     bool running = true; // Whether the program should be running.
     
     /* TODO: make each render_target a property of the gui. */
-    test_image = init_render_target_image(g->r, 0, "./img/test.jpg");
-    test_text  = init_render_target_text(g->te, 1, "./fonts/Inconsolata-Regular.ttf", "Click the mouse to exit.");
+    test_image = init_render_target_image(g->r, 0, "./img/test.jpg", 0, 0);
+    txt = "Click the mouse to exit";
+    test_text  = init_render_target_text(g->te, 1, "./fonts/Hybrid_b.ttf", txt, 230, 200, 0, 0, 0, 100);
 
     /* Run the program. */
     while (running)

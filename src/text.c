@@ -26,11 +26,11 @@ text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, in
     return t;
 }
 
-bool draw_text(text* t)
+bool draw_text(text* t, int x, int y)
 {
     bool success;
 
-    if (!(success = TTF_DrawRendererText(t->t, 250, 200)))
+    if (!(success = TTF_DrawRendererText(t->t, x, y)))
     {
         fsout(stdout, "draw_text() failure: %s\n", SDL_GetError());
     }

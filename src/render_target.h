@@ -24,10 +24,12 @@ typedef struct render_target_data {
     image* img;
     enum render_target_types render_target_type;
     unsigned int render_layer;
+    int x;
+    int y;
 } render_target;
 
-render_target* init_render_target_text(TTF_TextEngine* te, int render_layer, char* font_path, char* text);
-render_target* init_render_target_image(SDL_Renderer* r, int render_layer, char* img_path);
+render_target* init_render_target_text(TTF_TextEngine* te, int render_layer, char* font_path, char* txt, int x, int y, int r, int g, int b, int a);
+render_target* init_render_target_image(SDL_Renderer* r, int render_layer, char* img_path, int x, int y);
 
 int min_heap_get_val(void* render_target_var);
 

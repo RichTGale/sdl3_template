@@ -16,7 +16,7 @@ typedef struct text_data {
 
 text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, int b, int a);
 
-bool draw_text(text* t);
+bool draw_text(text* t, int x, int y);
 
 void term_text(text* t);
 
