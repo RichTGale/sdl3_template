@@ -10,30 +10,6 @@
 
 #include "gui.h"
 
-
-SDL_Texture* load_img(SDL_Renderer* r, char* fname)
-{
-    SDL_IOStream* src;
-    SDL_Surface* srf;
-    SDL_Texture* txt;
-    
-    if ((src = SDL_IOFromFile(fname, "r")) == NULL)
-    {
-        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
-    }
-    if ((srf = IMG_LoadJPG_IO(src)) == NULL)
-    {
-        fsout(stdout, "load_img() failure: Unable to load jpg!\n");
-    }
-    if ((txt = SDL_CreateTextureFromSurface(r, srf)) == NULL)
-    {
-        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
-    }
-
-    return txt;
-}
-
-
 /**
  * This function returns an intialised gui.
  */
@@ -53,7 +29,7 @@ gui* init_gui(int w, int h)
     }
 
     /* Create an SDL3 window. */
-    if ((g->w = SDL_CreateWindow("mywindow", w, h, SDL_WINDOW_FULLSCREEN)) != NULL)
+    if ((g->w = SDL_CreateWindow("mywindow", w, h, 0)) != NULL)
     {
         fsout(stdout, "SDL window creation success\n");
     }
@@ -73,6 +49,8 @@ gui* init_gui(int w, int h)
     }
 
     g->use_ttf = false;
+
+    min_heap_init(&(g->rendor_targets));
 
     /* Return the gui. */
     return g;
@@ -115,11 +93,14 @@ gui* init_ttf(gui* g)
  */
 gui* exec_gui(gui* g)
 {
-    SDL_Texture* test_txt;
-    SDL_FRect test_rect;
     SDL_Event event; // Stores input
-    text* t;
+    rendor_target* test_image;
+    rendor_target* test_text;
     bool running = true; // Whether the program should be running.
+        
+    /* TODO: make each rendor_target a property of the gui. */
+    test_image = init_rendor_target(g->r, g->te, RENDOR_TARGET_IMAGE, 0);
+    test_text  = init_rendor_target(g->r, g->te, RENDOR_TARGET_TEXT, 1);
 
     /* Run the program. */
     while (running)
@@ -137,44 +118,32 @@ gui* exec_gui(gui* g)
 	        }
 	    }
 
-        if (g->use_ttf)
-        {
-            t = init_text(g->te, "./fonts/Inconsolata-Regular.ttf", "Click the mouse to exit.", 255, 255, 255, 255);
-        }
-        
+    
+	    if (!min_heap_val_exists(g->rendor_targets, (void*) test_image))
+	    {
+	        min_heap_add(&(g->rendor_targets), (void*) test_image);
+	    }
+	    if (!min_heap_val_exists(g->rendor_targets, (void*) test_text))
+	    {
+	        min_heap_add(&(g->rendor_targets), (void*) test_text);
+	    }
 
         /* Render the program. */
-	    SDL_RenderClear(g->r);
-        
-        /* Rendering image. */
-        test_txt = load_img(g->r, "./img/test.jpg");
-        if (!SDL_RenderTexture(g->r, test_txt, NULL, NULL))
-        {
-            fsout(stdout, "Rendering img failure: %s\n", SDL_GetError());
-        }
+        SDL_RenderClear(g->r);
 
-        /* Rendering ttf. */
-        if (g->use_ttf)
+        while (!min_heap_is_empty(g->rendor_targets))
         {
-            if (!draw_text(t))
-            {
-                fsout(stdout, "draw_text() failure\n");
-            }
+            show_rendor_target(g->r, (rendor_target*) min_heap_pop_min(&(g->rendor_targets)));
         }
-
 
 	    
         SDL_RenderPresent(g->r);
+        
 
-        /* Cleaning ttf. */
-        if (g->use_ttf)
-        {
-	        term_text(t);
-        }
-
-        /* Cleaning image. */
-        SDL_DestroyTexture(test_txt);
     }
+        
+    term_rendor_target(test_image);
+    term_rendor_target(test_text);
 
     /* Return the gui. */
     return g;
@@ -185,6 +154,8 @@ gui* exec_gui(gui* g)
  */
 void term_gui(gui* g)
 {
+
+    min_heap_free(&(g->rendor_targets));
 
     /* Clean everything up. */
     if (g->use_ttf)

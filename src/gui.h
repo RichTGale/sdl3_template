@@ -21,18 +21,20 @@
 #include <stdbool.h>
 
 #include "utils.h"
-#include "text.h"
+//#include "text.h"
+#include "min_heap.h"
+#include "rendor_target.h"
 
 /**
  * This is the gui data structure.
  */
 typedef struct gui_data {
     SDL_Window* w;
-    SDL_GPUDevice* gpu;
     SDL_Renderer* r;
     SDL_Event* e;
     TTF_TextEngine* te;
     TTF_Font* f;
+    min_heap rendor_targets;
     bool use_ttf;
 } gui;
 
