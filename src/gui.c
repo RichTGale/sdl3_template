@@ -11,6 +11,28 @@
 #include "gui.h"
 
 
+SDL_Texture* load_img(SDL_Renderer* r, char* fname)
+{
+    SDL_IOStream* src;
+    SDL_Surface* srf;
+    SDL_Texture* txt;
+    
+    if ((src = SDL_IOFromFile(fname, "r")) == NULL)
+    {
+        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
+    }
+    if ((srf = IMG_LoadJPG_IO(src)) == NULL)
+    {
+        fsout(stdout, "load_img() failure: Unable to load jpg!\n");
+    }
+    if ((txt = SDL_CreateTextureFromSurface(r, srf)) == NULL)
+    {
+        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
+    }
+
+    return txt;
+}
+
 
 /**
  * This function returns an intialised gui.
@@ -93,6 +115,8 @@ gui* init_ttf(gui* g)
  */
 gui* exec_gui(gui* g)
 {
+    SDL_Texture* test_txt;
+    SDL_FRect test_rect;
     SDL_Event event; // Stores input
     text* t;
     bool running = true; // Whether the program should be running.
@@ -117,10 +141,19 @@ gui* exec_gui(gui* g)
         {
             t = init_text(g->te, "./fonts/Inconsolata-Regular.ttf", "Click the mouse to exit.", 255, 255, 255, 255);
         }
+        
 
         /* Render the program. */
 	    SDL_RenderClear(g->r);
+        
+        /* Rendering image. */
+        test_txt = load_img(g->r, "./img/test.jpg");
+        if (!SDL_RenderTexture(g->r, test_txt, NULL, NULL))
+        {
+            fsout(stdout, "Rendering img failure: %s\n", SDL_GetError());
+        }
 
+        /* Rendering ttf. */
         if (g->use_ttf)
         {
             if (!draw_text(t))
@@ -128,13 +161,19 @@ gui* exec_gui(gui* g)
                 fsout(stdout, "draw_text() failure\n");
             }
         }
+
+
 	    
         SDL_RenderPresent(g->r);
 
+        /* Cleaning ttf. */
         if (g->use_ttf)
         {
 	        term_text(t);
         }
+
+        /* Cleaning image. */
+        SDL_DestroyTexture(test_txt);
     }
 
     /* Return the gui. */
