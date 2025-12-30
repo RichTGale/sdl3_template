@@ -53,7 +53,7 @@ gui* init_gui(int w, int h)
     }
 
     /* Create an SDL3 window. */
-    if ((g->w = SDL_CreateWindow("mywindow", w, h, 0)) != NULL)
+    if ((g->w = SDL_CreateWindow("mywindow", w, h, SDL_WINDOW_FULLSCREEN)) != NULL)
     {
         fsout(stdout, "SDL window creation success\n");
     }

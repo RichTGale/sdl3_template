@@ -30,7 +30,7 @@ bool draw_text(text* t)
 {
     bool success;
 
-    if (!(success = TTF_DrawRendererText(t->t, 400, 300)))
+    if (!(success = TTF_DrawRendererText(t->t, 250, 200)))
     {
         fsout(stdout, "draw_text() failure: %s\n", SDL_GetError());
     }
