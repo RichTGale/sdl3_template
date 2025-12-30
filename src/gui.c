@@ -133,7 +133,7 @@ gui* exec_gui(gui* g)
 
         while (!min_heap_is_empty(g->render_targets))
         {
-            show_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
+            draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
         }
 
         SDL_RenderPresent(g->r);

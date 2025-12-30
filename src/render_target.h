@@ -9,6 +9,7 @@
 #include <stdlib.h>
 
 #include "text.h"
+#include "image.h"
 #include "utils.h"
 
 enum render_target_types {
@@ -17,10 +18,10 @@ enum render_target_types {
 };
 
 typedef struct render_target_data {
-    SDL_Texture* txt;
     SDL_FRect src;
     SDL_FRect dst;
-    text* t;
+    text* txt;
+    image* img;
     enum render_target_types render_target_type;
     unsigned int render_layer;
 } render_target;
@@ -30,7 +31,7 @@ render_target* init_render_target_image(SDL_Renderer* r, int render_layer, char*
 
 int min_heap_get_val(void* render_target_var);
 
-void show_render_target(SDL_Renderer* r, render_target* rt);
+void draw_render_target(SDL_Renderer* r, render_target* rt);
 
 void term_render_target(render_target* rt);
 

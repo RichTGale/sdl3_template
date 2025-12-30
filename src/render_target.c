@@ -1,30 +1,6 @@
 
 #include "render_target.h"
 
-SDL_Texture* load_img(SDL_Renderer* r, char* fname)
-{
-    SDL_IOStream* src;
-    SDL_Surface* srf;
-    SDL_Texture* txt;
-    
-    if ((src = SDL_IOFromFile(fname, "r")) == NULL)
-    {
-        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
-    }
-    if ((srf = IMG_LoadJPG_IO(src)) == NULL)
-    {
-        fsout(stdout, "load_img() failure: Unable to load jpg!\n");
-    }
-    if ((txt = SDL_CreateTextureFromSurface(r, srf)) == NULL)
-    {
-        fsout(stdout, "load_img() failure: %s\n", SDL_GetError());
-    }
-
-    SDL_DestroySurface(srf);
-    SDL_CloseIO(src);
-
-    return txt;
-}
 
 render_target* init_render_target_text(TTF_TextEngine* te, int render_layer, char* font_path, char* _text)
 {
@@ -33,7 +9,7 @@ render_target* init_render_target_text(TTF_TextEngine* te, int render_layer, cha
     rt->render_target_type = RENDER_TARGET_TEXT;
     rt->render_layer = render_layer;
   
-    rt->t = init_text(te, font_path, _text, 255, 255, 255, 255);
+    rt->txt = init_text(te, font_path, _text, 255, 255, 255, 255);
     
     return rt;
 }
@@ -45,7 +21,7 @@ render_target* init_render_target_image(SDL_Renderer* r, int render_layer, char*
     rt->render_target_type = RENDER_TARGET_IMAGE;
     rt->render_layer = render_layer;
   
-    rt->txt = load_img(r, img_path);
+    rt->img = init_image(r, img_path);
 
     return rt;
 }
@@ -57,20 +33,20 @@ int min_heap_get_val(void* render_target_var)
     return rt->render_layer;
 }
 
-void show_render_target(SDL_Renderer* r, render_target* rt)
+void draw_render_target(SDL_Renderer* r, render_target* rt)
 {
     switch (rt->render_target_type)
     {
         case RENDER_TARGET_TEXT:
-            if(!draw_text(rt->t))
+            if(!draw_text(rt->txt))
             {
                 fsout(stdout, "show_render_target() failure: draw_text() returned 0.\n");
             }
             break;
         case RENDER_TARGET_IMAGE:
-            if (!SDL_RenderTexture(r, rt->txt, NULL, NULL))
+            if(!draw_image(r, rt->img))
             {
-                fsout(stdout, "show_render_target() failure: %s\n", SDL_GetError());
+                fsout(stdout, "show_render_target() failure: draw_image() returned 0.\n");
             }
             break;
         default:
@@ -82,7 +58,11 @@ void term_render_target(render_target* rt)
 {
     if (rt->txt != NULL)
     {
-        SDL_DestroyTexture(rt->txt);
+        term_text(rt->txt);
+    }
+    if (rt->img != NULL)
+    {
+        term_image(rt->img);
     }
 
     free(rt);

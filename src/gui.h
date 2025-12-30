@@ -21,7 +21,6 @@
 #include <stdbool.h>
 
 #include "utils.h"
-//#include "text.h"
 #include "min_heap.h"
 #include "render_target.h"
 
