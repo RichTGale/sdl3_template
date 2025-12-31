@@ -50,6 +50,8 @@ gui* init_gui(int w, int h)
 
     g->use_ttf = false;
 
+    g->frame_timer = timer_nano_init();
+
     min_heap_init(&(g->render_targets));
 
     /* Return the gui. */
@@ -96,10 +98,16 @@ gui* exec_gui(gui* g)
     SDL_Event event; // Stores input
     render_target* test_image;
     render_target* test_text;
+    const long long FRAMES_PER_SEC = 60; // Frames per second.
+    long long nanos_per_sec; // #define in timer_nano.h
+    long long frame_len;
     char* txt;
     bool running = true; // Whether the program should be running.
+     
+    nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
+    frame_len = nanos_per_sec / FRAMES_PER_SEC;;
     
-    /* TODO: make each render_target a property of the gui. */
+    /* Initialiise first page (TODO: put this in init_gui(). */
     test_image = init_render_target_image(g->r, 0, "./img/test.jpg", 0, 0);
     txt = "Click the mouse to exit";
     test_text  = init_render_target_text(g->te, 1, "./fonts/Hybrid_b.ttf", txt, 230, 200, 0, 0, 0, 100);
@@ -107,38 +115,45 @@ gui* exec_gui(gui* g)
     /* Run the program. */
     while (running)
     {
-        /* Store input events. */
-	    while(SDL_PollEvent(&event))
-	    {
-            /* Determine what type of event happened. */
-	        switch (event.type)
-	        {
-                /* Exit the program if the mouse button is released. */
-	            case SDL_EVENT_MOUSE_BUTTON_UP:
-	                running = false;
-	                break;
-	        }
-	    }
-
-    
-	    if (!min_heap_val_exists(g->render_targets, (void*) test_image))
-	    {
-	        min_heap_add(&(g->render_targets), (void*) test_image);
-	    }
-	    if (!min_heap_val_exists(g->render_targets, (void*) test_text))
-	    {
-	        min_heap_add(&(g->render_targets), (void*) test_text);
-	    }
-
-        /* Render the program. */
-        SDL_RenderClear(g->r);
-
-        while (!min_heap_is_empty(g->render_targets))
+        if (timer_nano_elapsed(*(g->frame_timer), frame_len))
         {
-            draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
-        }
+            /* Store input events. */
+            while(SDL_PollEvent(&event))
+            {
+                /* Determine what type of event happened. */
+                switch (event.type)
+                {
+                    /* Exit the program if the mouse button is released. */
+                    case SDL_EVENT_MOUSE_BUTTON_UP:
+                        running = false;
+                        break;
+                }
+            }
 
-        SDL_RenderPresent(g->r);
+            /* Populate rendering heap. */
+            if (!min_heap_val_exists(g->render_targets, (void*) test_image))
+            {
+                min_heap_add(&(g->render_targets), (void*) test_image);
+            }
+            if (!min_heap_val_exists(g->render_targets, (void*) test_text))
+            {
+                min_heap_add(&(g->render_targets), (void*) test_text);
+            }
+
+            /* Clear the screen. */
+            SDL_RenderClear(g->r);
+
+            /* Empty the rendring heap. */
+            while (!min_heap_is_empty(g->render_targets))
+            {
+                draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
+            }
+
+            /* Render everything. */
+            SDL_RenderPresent(g->r);
+
+            timer_nano_reinit(g->frame_timer);
+        }
 
     }
         
@@ -154,21 +169,19 @@ gui* exec_gui(gui* g)
  */
 void term_gui(gui* g)
 {
-
-    min_heap_free(&(g->render_targets));
-
     /* Clean everything up. */
+    min_heap_free(&(g->render_targets));
+    timer_nano_term(g->frame_timer);
     if (g->use_ttf)
     {
         fsout(stdout, "Cleaning TTF\n");
         TTF_DestroyRendererTextEngine(g->te);
     }
-
     fsout(stdout, "Cleaning SDL\n");
     SDL_DestroyRenderer(g->r);
     SDL_DestroyWindow(g->w);
     SDL_Quit();
     
     /* Print status message. */
-    fsout(stdout, "Exiting gui\n");
+    fsout(stdout, "Exiting SDL3 template\n");
 }

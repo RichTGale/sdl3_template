@@ -23,6 +23,7 @@
 #include "utils.h"
 #include "min_heap.h"
 #include "render_target.h"
+#include "timer_nano.h"
 
 /**
  * This is the gui data structure.
@@ -33,6 +34,7 @@ typedef struct gui_data {
     SDL_Event* e;
     TTF_TextEngine* te;
     TTF_Font* f;
+    timer_nano* frame_timer;
     min_heap render_targets;
     bool use_ttf;
 } gui;
