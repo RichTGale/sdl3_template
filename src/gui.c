@@ -54,6 +54,8 @@ gui* init_gui(int w, int h)
 
     min_heap_init(&(g->render_targets));
 
+    g->gui_page = EXAMPLE_PAGE;
+
     /* Return the gui. */
     return g;
 }
@@ -96,8 +98,6 @@ gui* init_ttf(gui* g)
 gui* exec_gui(gui* g)
 {
     SDL_Event event; // Stores input
-    tile* t;
-    array* t_render_targets;
     const long long FRAMES_PER_SEC = 60; // Frames per second.
     long long nanos_per_sec; // #define in timer_nano.h
     long long frame_len;
@@ -106,9 +106,9 @@ gui* exec_gui(gui* g)
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
-    /* Initialiise first tile/page (TODO: put this in init_gui(). */
-    t = init_tile(g->r, g->te, 0, 0, 800, 480);
-
+    /* Create a page. */
+    g->current_page = init_page(g->gui_page, g->r, g->te, 0, 0, 800, 480);
+    
     /* Run the program. */
     while (running)
     {
@@ -128,14 +128,14 @@ gui* exec_gui(gui* g)
             }
 
             /* Populate rendering heap. */
-            t_render_targets = get_render_targets(t);
-            for (int i = 0; i < array_size(*t_render_targets); i++)
-            {
-                if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*t_render_targets, i)))
-                {
-                    min_heap_add(&(g->render_targets), (void*) array_get_data(*t_render_targets, i));
-                }
-            }
+            populate_rendering_heap(g);
+//            for (int i = 0; i < array_size(*(get_render_targets(g->home_page))); i++)
+//            {
+//                if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*(get_render_targets(g->home_page)), i)))
+//                {
+//                    min_heap_add(&(g->render_targets), (void*) array_get_data(*(get_render_targets(g->home_page)), i));
+//                }
+//            }
 
             /* Clear the screen. */
             SDL_RenderClear(g->r);
@@ -152,14 +152,24 @@ gui* exec_gui(gui* g)
             /* Restart framerate timer. */
             timer_nano_reinit(g->frame_timer);
         }
-
     }
-
-    /* Clean up the current tile. */
-    term_tile(t);
+    
+    /* Clean up a page. */
+    term_page(g->current_page);
 
     /* Return the gui. */
     return g;
+}
+
+void populate_rendering_heap(gui* g)
+{
+    for (int i = 0; i < array_size(*(get_render_targets(g->current_page))); i++)
+    {
+        if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*(get_render_targets(g->current_page)), i)))
+        {
+            min_heap_add(&(g->render_targets), (void*) array_get_data(*(get_render_targets(g->current_page)), i));
+        }
+    }
 }
 
 /**

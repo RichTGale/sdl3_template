@@ -24,7 +24,8 @@
 #include "min_heap.h"
 #include "render_target.h"
 #include "timer_nano.h"
-#include "tile.h"
+#include "page.h"
+
 
 /**
  * This is the gui data structure.
@@ -37,6 +38,8 @@ typedef struct gui_data {
     TTF_Font* f;
     timer_nano* frame_timer;
     min_heap render_targets;
+    page* current_page;
+    enum GuiPages gui_page;
     bool use_ttf;
 } gui;
 
@@ -54,6 +57,8 @@ gui* init_ttf(gui* g);
  * This function runs the gui supplied to it.
  */
 gui* exec_gui(gui* g);
+
+void populate_rendering_heap(gui* g);
 
 /**
  * This function cleans up and exits the gui supplied to it.
