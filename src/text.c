@@ -43,4 +43,5 @@ void term_text(text* t)
 {
     TTF_DestroyText(t->t);
     TTF_CloseFont(t->f);
+    free(t);
 }

@@ -14,8 +14,8 @@ enum GuiPages {
 };
 
 typedef struct page_data {
-//    array buttons; 
     array render_targets;
+    enum GuiPages gui_page;
 } page;
 
 

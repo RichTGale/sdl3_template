@@ -106,8 +106,6 @@ gui* exec_gui(gui* g)
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
-    /* Create a page. */
-    g->current_page = init_page(g->gui_page, g->w, g->r, g->te);
     
     /* Run the program. */
     while (running)
@@ -127,6 +125,9 @@ gui* exec_gui(gui* g)
                 }
             }
 
+            /* Create a page. */
+            g->current_page = init_page(g->gui_page, g->w, g->r, g->te);
+            
             /* Put the current page's stuff that needs to be rendered into the rendering heap. */
             populate_rendering_heap(g);
 
@@ -141,14 +142,15 @@ gui* exec_gui(gui* g)
 
             /* Render everything. */
             SDL_RenderPresent(g->r);
+    
+            /* Clean up a page. */
+            term_page(g->current_page);
 
             /* Restart framerate timer. */
             timer_nano_reinit(g->frame_timer);
         }
     }
     
-    /* Clean up a page. */
-    term_page(g->current_page);
 
     /* Return the gui. */
     return g;

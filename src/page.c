@@ -10,16 +10,15 @@ struct {
 
 page* init_page(enum GuiPages gui_page, SDL_Window* win, SDL_Renderer* r, TTF_TextEngine* te)
 {
-
     SDL_FRect text_src;
     page* p = (page*) malloc(sizeof(struct page_data));
     int win_w, win_h;
     int num_chars;
-    
 
     array_init(&(p->render_targets));
+    p->gui_page = gui_page;
 
-    switch (gui_page)
+    switch (p->gui_page)
     {
         case EXAMPLE_PAGE:
 
@@ -49,7 +48,7 @@ page* init_page(enum GuiPages gui_page, SDL_Window* win, SDL_Renderer* r, TTF_Te
             /* Add the render targets to the array of render targets. */
             array_push_back(&(p->render_targets), (void*) example_page.test_img);
             array_push_back(&(p->render_targets), (void*) example_page.test_txt);
-            
+
             break;
     }
 
@@ -65,11 +64,17 @@ array* get_render_targets(page* p)
 void term_page(page* p)
 {
     fsout(stdout, "Cleaning up the current page.\n");
-    while (array_size(p->render_targets) < 0)
+
+    switch (p->gui_page)
     {
-        term_render_target(array_pop_back(&(p->render_targets)));
+        case EXAMPLE_PAGE:
+            term_render_target(example_page.test_img);
+            term_render_target(example_page.test_txt);
+            break;
     }
+
     array_free(&(p->render_targets));
+    
     free(p);
 }
 
