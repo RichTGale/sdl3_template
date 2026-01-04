@@ -96,20 +96,17 @@ gui* init_ttf(gui* g)
 gui* exec_gui(gui* g)
 {
     SDL_Event event; // Stores input
-//    render_target* test_image;
-//    render_target* test_text;
     tile* t;
     array* t_render_targets;
     const long long FRAMES_PER_SEC = 60; // Frames per second.
     long long nanos_per_sec; // #define in timer_nano.h
     long long frame_len;
-    char* txt;
     bool running = true; // Whether the program should be running.
      
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
-    /* Initialiise first page (TODO: put this in init_gui(). */
+    /* Initialiise first tile/page (TODO: put this in init_gui(). */
     t = init_tile(g->r, g->te, 0, 0, 800, 480);
 
     /* Run the program. */
@@ -143,7 +140,7 @@ gui* exec_gui(gui* g)
             /* Clear the screen. */
             SDL_RenderClear(g->r);
 
-            /* Empty the rendring heap. */
+            /* Empty the rendering heap. */
             while (!min_heap_is_empty(g->render_targets))
             {
                 draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
@@ -152,11 +149,13 @@ gui* exec_gui(gui* g)
             /* Render everything. */
             SDL_RenderPresent(g->r);
 
+            /* Restart framerate timer. */
             timer_nano_reinit(g->frame_timer);
         }
 
     }
-        
+
+    /* Clean up the current tile. */
     term_tile(t);
 
     /* Return the gui. */
