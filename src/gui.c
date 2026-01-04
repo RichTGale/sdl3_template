@@ -107,7 +107,7 @@ gui* exec_gui(gui* g)
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
     /* Create a page. */
-    g->current_page = init_page(g->gui_page, g->r, g->te, 0, 0, 800, 480);
+    g->current_page = init_page(g->gui_page, g->w, g->r, g->te);
     
     /* Run the program. */
     while (running)

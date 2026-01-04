@@ -17,7 +17,7 @@ typedef struct image_data {
 
 image* init_image(SDL_Renderer* r, const char* file);
 
-bool draw_image(SDL_Renderer* r, image* img);
+bool draw_image(SDL_Renderer* r, SDL_FRect dst, image* img);
 
 void term_image(image* img);
 

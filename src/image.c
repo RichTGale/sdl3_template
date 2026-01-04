@@ -29,11 +29,11 @@ image* init_image(SDL_Renderer* r, const char* file)
     return img;
 }
 
-bool draw_image(SDL_Renderer* r, image* img)
+bool draw_image(SDL_Renderer* r, SDL_FRect dst, image* img)
 {
     bool success = true;
 
-    if (!SDL_RenderTexture(r, img->txr, NULL, NULL))
+    if (!SDL_RenderTexture(r, img->txr, NULL, &dst))
     {
         fsout(stdout, "draw_image() failure: %s\n", SDL_GetError());
         success = false;

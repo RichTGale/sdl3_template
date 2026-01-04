@@ -3,6 +3,7 @@
 #define page_h
 
 #include <SDL3/SDL.h>
+#include <string.h> // strlen()
 
 #include "utils.h"
 #include "array.h"
@@ -13,12 +14,12 @@ enum GuiPages {
 };
 
 typedef struct page_data {
-    array rects;
+//    array buttons; 
     array render_targets;
 } page;
 
 
-page* init_page(enum GuiPages gui_page, SDL_Renderer* r, TTF_TextEngine* te, int x, int y, int w, int h);
+page* init_page(enum GuiPages gui_page, SDL_Window* win, SDL_Renderer* r, TTF_TextEngine* te);
 
 array* get_render_targets(page* p);
 

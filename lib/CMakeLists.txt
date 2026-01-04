@@ -10,7 +10,7 @@ add_library (gui ../../src/gui.h ../../src/gui.c)
 
 find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3)
 
-target_link_libraries(text LINK_PUBLIC SDL3_ttf::SDL3_ttf utils)
+target_link_libraries(text LINK_PUBLIC SDL3::SDL3 SDL3_ttf::SDL3_ttf utils)
 target_link_libraries(image LINK_PUBLIC SDL3::SDL3 SDL3_image::SDL3_image utils)
 target_link_libraries(render_target LINK_PUBLIC SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf text image utils)
 target_link_libraries(min_heap LINK_PUBLIC array render_target)

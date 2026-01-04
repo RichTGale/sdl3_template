@@ -26,17 +26,18 @@ text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, in
     return t;
 }
 
-bool draw_text(text* t, int x, int y)
+bool draw_text(text* t, SDL_FRect src)
 {
     bool success;
 
-    if (!(success = TTF_DrawRendererText(t->t, x, y)))
+    if (!(success = TTF_DrawRendererText(t->t, src.x, src.y)))
     {
         fsout(stdout, "draw_text() failure: %s\n", SDL_GetError());
     }
 
     return success;
 }
+
 
 void term_text(text* t)
 {
