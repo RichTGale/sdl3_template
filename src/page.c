@@ -3,7 +3,6 @@
 #include "page.h"
 
 struct {
-//    SDL_FRect rect;
     render_target* test_img;
     render_target* test_txt;
     char* txt;
@@ -69,7 +68,6 @@ void term_page(page* p)
     while (array_size(p->render_targets) < 0)
     {
         term_render_target(array_pop_back(&(p->render_targets)));
-//        term_render_target(array_pop_back(&(p->render_targets)));
     }
     array_free(&(p->render_targets));
     free(p);

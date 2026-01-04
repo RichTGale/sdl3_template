@@ -127,13 +127,13 @@ gui* exec_gui(gui* g)
                 }
             }
 
-            /* Populate rendering heap. */
+            /* Put the current page's stuff that needs to be rendered into the rendering heap. */
             populate_rendering_heap(g);
 
             /* Clear the screen. */
             SDL_RenderClear(g->r);
 
-            /* Empty the rendering heap. */
+            /* Empty and draw all the stuff in the rendering heap. */
             while (!min_heap_is_empty(g->render_targets))
             {
                 draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
@@ -154,6 +154,9 @@ gui* exec_gui(gui* g)
     return g;
 }
 
+/**
+ * Puts the current page's stuff that needs to be rendered into the rendering heap. 
+ */
 void populate_rendering_heap(gui* g)
 {
     for (int i = 0; i < array_size(*(get_render_targets(g->current_page))); i++)
