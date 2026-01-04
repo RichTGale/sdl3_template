@@ -96,8 +96,10 @@ gui* init_ttf(gui* g)
 gui* exec_gui(gui* g)
 {
     SDL_Event event; // Stores input
-    render_target* test_image;
-    render_target* test_text;
+//    render_target* test_image;
+//    render_target* test_text;
+    tile* t;
+    array* t_render_targets;
     const long long FRAMES_PER_SEC = 60; // Frames per second.
     long long nanos_per_sec; // #define in timer_nano.h
     long long frame_len;
@@ -105,12 +107,10 @@ gui* exec_gui(gui* g)
     bool running = true; // Whether the program should be running.
      
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
-    frame_len = nanos_per_sec / FRAMES_PER_SEC;;
-    
+    frame_len = nanos_per_sec / FRAMES_PER_SEC;
+
     /* Initialiise first page (TODO: put this in init_gui(). */
-    test_image = init_render_target_image(g->r, 0, "./img/test.jpg", 0, 0);
-    txt = "Click the mouse to exit";
-    test_text  = init_render_target_text(g->te, 1, "./fonts/Hybrid_b.ttf", txt, 230, 200, 0, 0, 0, 100);
+    t = init_tile(g->r, g->te, 0, 0, 800, 480);
 
     /* Run the program. */
     while (running)
@@ -131,13 +131,13 @@ gui* exec_gui(gui* g)
             }
 
             /* Populate rendering heap. */
-            if (!min_heap_val_exists(g->render_targets, (void*) test_image))
+            t_render_targets = get_render_targets(t);
+            for (int i = 0; i < array_size(*t_render_targets); i++)
             {
-                min_heap_add(&(g->render_targets), (void*) test_image);
-            }
-            if (!min_heap_val_exists(g->render_targets, (void*) test_text))
-            {
-                min_heap_add(&(g->render_targets), (void*) test_text);
+                if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*t_render_targets, i)))
+                {
+                    min_heap_add(&(g->render_targets), (void*) array_get_data(*t_render_targets, i));
+                }
             }
 
             /* Clear the screen. */
@@ -157,8 +157,7 @@ gui* exec_gui(gui* g)
 
     }
         
-    term_render_target(test_image);
-    term_render_target(test_text);
+    term_tile(t);
 
     /* Return the gui. */
     return g;

@@ -24,6 +24,7 @@
 #include "min_heap.h"
 #include "render_target.h"
 #include "timer_nano.h"
+#include "tile.h"
 
 /**
  * This is the gui data structure.
