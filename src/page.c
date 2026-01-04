@@ -26,29 +26,31 @@ page* init_page(enum GuiPages gui_page, SDL_Window* win, SDL_Renderer* r, TTF_Te
 
             /* Print a status message. */
             fsout(stdout, "Creating the example page.\n");
-		   
+
             /* Get the window size. */
             if (!SDL_GetWindowSizeInPixels(win, &win_w, &win_h))
-		    {
-		        fsout(stdout, "init_pages() failure: %s\n", SDL_GetError());
-		    }
+            {
+                fsout(stdout, "init_pages() failure: %s\n", SDL_GetError());
+            }
 
             /* Create the background image. */
             example_page.test_img = init_render_target_image(r, 0, "./img/test.jpg", 0, 0, win_w, win_h);
 
-            /* Create the text. */
-		    example_page.txt = "Click the mouse to exit";
-		    example_page.test_txt  = init_render_target_text(te, 1, "./fonts/Inconsolata-Regular.ttf", example_page.txt, 0, 0, 0, 0, 0, 100);
+            /* Create the text. 
+             * Position the text afterwards because it needs to be created before we can get its width and height. */
+            example_page.txt = "Click the mouse to exit";
+            example_page.test_txt  = init_render_target_text(te, 1, "./fonts/Inconsolata-Regular.ttf", example_page.txt, 0, 0, 0, 0, 0, 100);
 
-            /* Get the text's rect. */
+            /* Get the text's rectangle. */
             text_src = get_render_target_src(*(example_page.test_txt));
 
             /* Position the text. */
-	        set_render_target_src(example_page.test_txt, (win_w / 2) - ((int) text_src.w / 2), (win_h / 2) - ((int) text_src.h / 2));
+            set_render_target_src(example_page.test_txt, (win_w / 2) - ((int) text_src.w / 2), (win_h / 2) - ((int) text_src.h / 2));
 
             /* Add the render targets to the array of render targets. */
             array_push_back(&(p->render_targets), (void*) example_page.test_img);
             array_push_back(&(p->render_targets), (void*) example_page.test_txt);
+            
             break;
     }
 

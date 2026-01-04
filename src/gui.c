@@ -129,13 +129,6 @@ gui* exec_gui(gui* g)
 
             /* Populate rendering heap. */
             populate_rendering_heap(g);
-//            for (int i = 0; i < array_size(*(get_render_targets(g->home_page))); i++)
-//            {
-//                if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*(get_render_targets(g->home_page)), i)))
-//                {
-//                    min_heap_add(&(g->render_targets), (void*) array_get_data(*(get_render_targets(g->home_page)), i));
-//                }
-//            }
 
             /* Clear the screen. */
             SDL_RenderClear(g->r);
