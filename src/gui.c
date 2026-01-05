@@ -91,25 +91,25 @@ gui* init_ttf(gui* g)
 
 
 /**
- * This function runs the gui supplied to it.
+ * This function has the main game loop in it.
  */
 gui* exec_gui(gui* g)
 {
     SDL_Event event; // Stores input
     const long long FRAMES_PER_SEC = 60; // Frames per second.
     long long nanos_per_sec; // #define in timer_nano.h
-    long long frame_len;
+    long long frame_len;   // The number of nanoseconds per frame 
     bool running = true; // Whether the program should be running.
      
+    /* Calculate the length of a frame in nanoseconds. */
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
+    /* Create an animation and add it to the array of animations. */
     array_init(&(g->animations));
-
-    /* Create an animation. */
     array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_EXAMPLE, g->w, g->r, g->te));
     
-    /* Run the program. */
+    /* Main game loop. */
     while (running)
     {
         if (timer_nano_elapsed(*(g->frame_timer), frame_len))
@@ -120,7 +120,7 @@ gui* exec_gui(gui* g)
                 /* Determine what type of event happened. */
                 switch (event.type)
                 {
-                    /* Exit the program if the mouse button is released. */
+                    /* Exit the program if the mouse button is released on the example button. */
                     case SDL_EVENT_MOUSE_BUTTON_UP:
                         for (int i = 0; i < array_size(g->animations); i++)
                         {
@@ -133,13 +133,13 @@ gui* exec_gui(gui* g)
                 }
             }
 
-            /* Put the current page's stuff that needs to be rendered into the rendering heap. */
+            /* Put all the render_targets from all the animations into the heap.. */
             populate_rendering_heap(g);
 
             /* Clear the screen. */
             SDL_RenderClear(g->r);
 
-            /* Empty and draw all the stuff in the rendering heap. */
+            /* Empty the heap and draw all the stuff in it. */
             while (!min_heap_is_empty(g->render_targets))
             {
                 draw_render_target(g->r, (render_target*) min_heap_pop_min(&(g->render_targets)));
@@ -154,7 +154,7 @@ gui* exec_gui(gui* g)
         }
     }
 
-    /* Clean up a page. */
+    /* Clean up the animation. */
     for (int i = 0; i < array_size(g->animations); i++)
     {
         term_animation(array_get_data(g->animations, i));
@@ -166,7 +166,7 @@ gui* exec_gui(gui* g)
 }
 
 /**
- * Puts the current page's stuff that needs to be rendered into the rendering heap. 
+ * Put all the render_targets from all the animations into the heap.. 
  */
 void populate_rendering_heap(gui* g)
 {
