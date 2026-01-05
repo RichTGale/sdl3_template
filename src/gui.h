@@ -21,10 +21,11 @@
 #include <stdbool.h>
 
 #include "utils.h"
+#include "array.h"
 #include "min_heap.h"
 #include "render_target.h"
 #include "timer_nano.h"
-#include "page.h"
+#include "animation.h"
 
 
 /**
@@ -38,8 +39,7 @@ typedef struct gui_data {
     TTF_Font* f;
     timer_nano* frame_timer;
     min_heap render_targets;
-    page* current_page;
-    enum GuiPages gui_page;
+    array animations;
     bool use_ttf;
 } gui;
 

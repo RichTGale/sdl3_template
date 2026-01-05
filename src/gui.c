@@ -54,8 +54,6 @@ gui* init_gui(int w, int h)
 
     min_heap_init(&(g->render_targets));
 
-    g->gui_page = EXAMPLE_PAGE;
-
     /* Return the gui. */
     return g;
 }
@@ -106,6 +104,10 @@ gui* exec_gui(gui* g)
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
+    array_init(&(g->animations));
+
+    /* Create an animation. */
+    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_EXAMPLE, g->w, g->r, g->te));
     
     /* Run the program. */
     while (running)
@@ -120,14 +122,17 @@ gui* exec_gui(gui* g)
                 {
                     /* Exit the program if the mouse button is released. */
                     case SDL_EVENT_MOUSE_BUTTON_UP:
-                        running = false;
+                        for (int i = 0; i < array_size(g->animations); i++)
+                        {
+                            if (animation_clicked(*((animation*) array_get_data(g->animations, i)), event.motion.x, event.motion.y))
+                            {
+                                running = false;
+                            }
+                        }
                         break;
                 }
             }
 
-            /* Create a page. */
-            g->current_page = init_page(g->gui_page, g->w, g->r, g->te);
-            
             /* Put the current page's stuff that needs to be rendered into the rendering heap. */
             populate_rendering_heap(g);
 
@@ -143,14 +148,18 @@ gui* exec_gui(gui* g)
             /* Render everything. */
             SDL_RenderPresent(g->r);
     
-            /* Clean up a page. */
-            term_page(g->current_page);
 
             /* Restart framerate timer. */
             timer_nano_reinit(g->frame_timer);
         }
     }
-    
+
+    /* Clean up a page. */
+    for (int i = 0; i < array_size(g->animations); i++)
+    {
+        term_animation(array_get_data(g->animations, i));
+    }
+    array_free(&(g->animations));
 
     /* Return the gui. */
     return g;
@@ -161,11 +170,14 @@ gui* exec_gui(gui* g)
  */
 void populate_rendering_heap(gui* g)
 {
-    for (int i = 0; i < array_size(*(get_render_targets(g->current_page))); i++)
+    for (int i = 0; i < array_size(g->animations); i++)
     {
-        if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*(get_render_targets(g->current_page)), i)))
+        for (int j = 0; j < array_size(*(get_render_targets(array_get_data(g->animations, i)))); j++)
         {
-            min_heap_add(&(g->render_targets), (void*) array_get_data(*(get_render_targets(g->current_page)), i));
+            if (!min_heap_val_exists(g->render_targets, (void*) array_get_data(*(get_render_targets(array_get_data(g->animations, i))), j)))
+            {
+                min_heap_add(&(g->render_targets), (void*) array_get_data(*(get_render_targets(array_get_data(g->animations, i))), j));
+            }
         }
     }
 }
