@@ -15,7 +15,7 @@ target_link_libraries(image LINK_PUBLIC SDL3::SDL3 SDL3_image::SDL3_image utils)
 target_link_libraries(render_target LINK_PUBLIC SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf text image utils)
 target_link_libraries(min_heap LINK_PUBLIC array render_target)
 target_link_libraries(timer_nano LINK_PUBLIC utils)
-target_link_libraries(animation LINK_PUBLIC SDL3::SDL3 utils array render_target)
+target_link_libraries(animation LINK_PUBLIC SDL3::SDL3 utils array render_target timer_nano)
 target_link_libraries(gui LINK_PUBLIC SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf utils array render_target min_heap timer_nano animation)
 
 target_include_directories (gui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

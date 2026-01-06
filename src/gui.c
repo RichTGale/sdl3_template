@@ -105,9 +105,10 @@ gui* exec_gui(gui* g)
     nanos_per_sec = NANOS_PER_SEC; // #define in timer_nano.h
     frame_len = nanos_per_sec / FRAMES_PER_SEC;
 
-    /* Create an animation and add it to the array of animations. */
+    /* Create some animations and add them to the array of animations. */
     array_init(&(g->animations));
     array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_EXAMPLE, g->w, g->r, g->te));
+    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_FLASHER, g->w, g->r, g->te));
     
     /* Main game loop. */
     while (running)
@@ -124,13 +125,26 @@ gui* exec_gui(gui* g)
                     case SDL_EVENT_MOUSE_BUTTON_UP:
                         for (int i = 0; i < array_size(g->animations); i++)
                         {
-                            if (animation_clicked(*((animation*) array_get_data(g->animations, i)), event.motion.x, event.motion.y))
+                            if (animation_clicked((animation*) array_get_data(g->animations, i), event.motion.x, event.motion.y))
                             {
                                 running = false;
                             }
                         }
                         break;
+
+                    case SDL_EVENT_MOUSE_MOTION:
+                        for (int i = 0; i < array_size(g->animations); i++)
+                        {
+                            animation_hovered((animation*) array_get_data(g->animations, i), event.motion.x, event.motion.y);
+                        }
+                        break;
+
                 }
+            }
+            
+            for (int i = 0; i < array_size(g->animations); i++)
+            {
+                animation_run((animation*) array_get_data(g->animations, i));
             }
 
             /* Put all the render_targets from all the animations into the heap.. */
