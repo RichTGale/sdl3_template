@@ -234,6 +234,18 @@ void term_animation(animation* ani)
             term_render_target(example_animation.test_btn_02_not_hovered);
             term_render_target(example_animation.test_btn_02_hovered);
             break;
+        case ANIMATION_TYPE_FLASHER:
+            term_render_target(flasher_animation.colour_01);
+            term_render_target(flasher_animation.colour_02);
+            term_render_target(flasher_animation.colour_03);
+            term_render_target(flasher_animation.colour_04);
+            term_render_target(flasher_animation.colour_05);
+            term_render_target(flasher_animation.colour_06);
+            term_render_target(flasher_animation.colour_07);
+            term_render_target(flasher_animation.colour_08);
+            array_free(&(flasher_animation.colours));
+            timer_nano_term(flasher_animation.timer);
+            break;
     }
 
     array_free(&(ani->render_targets));
