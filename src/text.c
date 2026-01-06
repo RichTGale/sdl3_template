@@ -5,7 +5,7 @@ text* init_text(TTF_TextEngine* te, char* font_path, char* txt, int r, int g, in
     text* t = (text*) malloc(sizeof(struct text_data));
     
     /* Open a font. */
-    if ((t->f = TTF_OpenFont(font_path, 30)) == NULL)
+    if ((t->f = TTF_OpenFont(font_path, 20)) == NULL)
     {
         fsout(stdout, "TTF font opening failure: %s\n", SDL_GetError());
     }
