@@ -108,8 +108,6 @@ gui* exec_gui(gui* g)
     /* Create some animations and add them to the array of animations. */
     array_init(&(g->animations));
     array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_BASICS, g->w, g->r, g->te));
-//    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_FLASHER, g->w, g->r, g->te));
-//    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_PEAK, g->w, g->r, g->te));
     
     /* Main game loop. */
     while (running)
@@ -143,10 +141,10 @@ gui* exec_gui(gui* g)
                 }
             }
             
-            for (int i = 0; i < array_size(g->animations); i++)
-            {
-                animation_run((animation*) array_get_data(g->animations, i));
-            }
+//            for (int i = 0; i < array_size(g->animations); i++)
+//            {
+//                /* Call animation functions here. */
+//            }
 
             /* Put all the render_targets from all the animations into the heap.. */
             populate_rendering_heap(g);

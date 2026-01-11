@@ -12,10 +12,10 @@
 #include "timer_nano.h"
 
 enum AnimationTypes {
+    /* Add AnimationTypes here. */
+
+
     ANIMATION_TYPE_BASICS,
-    ANIMATION_TYPE_EXAMPLE,
-    ANIMATION_TYPE_FLASHER,
-    ANIMATION_TYPE_PEAK
 };
 
 typedef struct animation_data {
@@ -26,11 +26,11 @@ typedef struct animation_data {
 
 animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, SDL_Renderer* r, TTF_TextEngine* te);
 
+/* Add animation functions here. */
+
 bool animation_clicked(animation* ani, int x, int y);
 
 void animation_hovered(animation* ani, int x, int y);
-
-void animation_run(animation* ani);
 
 array* get_render_targets(animation* p);
 
