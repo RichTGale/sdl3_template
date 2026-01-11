@@ -14,9 +14,9 @@ image* init_image(SDL_Renderer* r, const char* file)
     {
         fsout(stdout, "init_image() failure: %s\n", SDL_GetError());
     }
-    if ((srf = IMG_LoadJPG_IO(src)) == NULL)
+    if ((srf = IMG_LoadPNG_IO(src)) == NULL)
     {
-        fsout(stdout, "init_image() failure: Unable to load jpg!\n");
+        fsout(stdout, "init_image() failure: Unable to load png!\n");
     }
     if ((img->txr = SDL_CreateTextureFromSurface(r, srf)) == NULL)
     {

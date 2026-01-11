@@ -50,7 +50,7 @@ animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, S
             }
 
             /* Create the background image. */
-            example_animation.test_img = init_render_target_image(r, 0, "./img/terafox-pallette/green_0.jpg", 0, 0, win_w, win_h);
+            example_animation.test_img = init_render_target_image(r, 0, "./img/terafox-pallette/green_0.png", 0, 0, win_w, win_h);
 
             /* Create the text. 
              * Position the text afterwards because it needs to be created before we can get its width and height. */
@@ -64,13 +64,13 @@ animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, S
             set_render_target_src(example_animation.test_txt, (win_w / 2) - ((int) text_src.w / 2), (win_h / 2) - ((int) text_src.h / 2));
 
             /* Create the buttons. */
-            example_animation.test_btn_01_not_pressed = init_render_target_image(r, 1, "./img/terafox-pallette/green_2.jpg", 
+            example_animation.test_btn_01_not_pressed = init_render_target_image(r, 1, "./img/terafox-pallette/green_2.png", 
                     (win_w / 2) - ((int) text_src.w / 2), (win_h / 2) - ((int) text_src.h / 2), text_src.w, text_src.h);
-            example_animation.test_btn_01_pressed = init_render_target_image(r, 1, "./img/terafox-pallette/green_3.jpg", 
+            example_animation.test_btn_01_pressed = init_render_target_image(r, 1, "./img/terafox-pallette/green_3.png", 
                     (win_w / 2) - ((int) text_src.w / 2), (win_h / 2) - ((int) text_src.h / 2), text_src.w, text_src.h);
-            example_animation.test_btn_02_not_hovered = init_render_target_image(r, 1, "./img/terafox-buttons/button_hover.jpg", 
+            example_animation.test_btn_02_not_hovered = init_render_target_image(r, 1, "./img/terafox-buttons/button_hover.png", 
                     0, 0, 100, 100);
-            example_animation.test_btn_02_hovered = init_render_target_image(r, 1, "./img/terafox-buttons/button_pressed.jpg", 
+            example_animation.test_btn_02_hovered = init_render_target_image(r, 1, "./img/terafox-buttons/button_pressed.png", 
                     0, 0, 100, 100);
 
             /* Add the render targets to the array of render targets. */
@@ -83,7 +83,7 @@ animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, S
         case ANIMATION_TYPE_FLASHER:
             
             /* Print a status message. */
-            fsout(stdout, "Creating the flasher animation.\n");
+            fsout(stdout, "Creating a flasher animation.\n");
 
             /* Get the window size. */
             if (!SDL_GetWindowSizeInPixels(win, &win_w, &win_h))
@@ -91,14 +91,14 @@ animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, S
                 fsout(stdout, "init_animations() failure: %s\n", SDL_GetError());
             }
 
-            flasher_animation.colour_01 = init_render_target_image(r, 1, "./img/terafox-pallette/green_0.jpg", win_w - 100, 0, 100, 100);
-            flasher_animation.colour_02 = init_render_target_image(r, 1, "./img/terafox-pallette/green_1.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_03 = init_render_target_image(r, 1, "./img/terafox-pallette/green_2.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_04 = init_render_target_image(r, 1, "./img/terafox-pallette/green_3.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_05 = init_render_target_image(r, 1, "./img/terafox-pallette/red_0.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_06 = init_render_target_image(r, 1, "./img/terafox-pallette/red_1.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_07 = init_render_target_image(r, 1, "./img/terafox-pallette/red_2.jpg",  win_w - 100, 0, 100, 100);
-            flasher_animation.colour_08 = init_render_target_image(r, 1, "./img/terafox-pallette/white_0.jpg", win_w - 100, 0, 100, 100); 
+            flasher_animation.colour_01 = init_render_target_image(r, 1, "./img/terafox-pallette/green_0.png", win_w - 100, 0, 100, 100);
+            flasher_animation.colour_02 = init_render_target_image(r, 1, "./img/terafox-pallette/green_1.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_03 = init_render_target_image(r, 1, "./img/terafox-pallette/green_2.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_04 = init_render_target_image(r, 1, "./img/terafox-pallette/green_3.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_05 = init_render_target_image(r, 1, "./img/terafox-pallette/red_0.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_06 = init_render_target_image(r, 1, "./img/terafox-pallette/red_1.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_07 = init_render_target_image(r, 1, "./img/terafox-pallette/red_2.png",  win_w - 100, 0, 100, 100);
+            flasher_animation.colour_08 = init_render_target_image(r, 1, "./img/terafox-pallette/white_0.png", win_w - 100, 0, 100, 100); 
 
             array_push_back(&(ani->render_targets), (void*) flasher_animation.colour_01);
             flasher_animation.current_colour = 0;
@@ -202,11 +202,13 @@ void animation_hovered(animation* ani, int x, int y)
                     if (rt == example_animation.test_btn_02_not_hovered)
                     {
                         array_set_data(&(ani->render_targets), i, example_animation.test_btn_02_hovered);
+                        system("aconnect 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
                     }
                 }
                 else if (rt == example_animation.test_btn_02_hovered)
                 {
                         array_set_data(&(ani->render_targets), i, example_animation.test_btn_02_not_hovered);
+                        system("aconnect -d 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
                 }
             }
             break;

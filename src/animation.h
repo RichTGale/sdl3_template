@@ -3,6 +3,7 @@
 #define animation_h
 
 #include <SDL3/SDL.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "utils.h"
