@@ -12,6 +12,7 @@
 #include "timer_nano.h"
 
 enum AnimationTypes {
+    ANIMATION_TYPE_BASICS,
     ANIMATION_TYPE_EXAMPLE,
     ANIMATION_TYPE_FLASHER,
     ANIMATION_TYPE_PEAK
