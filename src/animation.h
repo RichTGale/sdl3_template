@@ -13,7 +13,8 @@
 
 enum AnimationTypes {
     ANIMATION_TYPE_EXAMPLE,
-    ANIMATION_TYPE_FLASHER
+    ANIMATION_TYPE_FLASHER,
+    ANIMATION_TYPE_PEAK
 };
 
 typedef struct animation_data {

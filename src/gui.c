@@ -108,7 +108,8 @@ gui* exec_gui(gui* g)
     /* Create some animations and add them to the array of animations. */
     array_init(&(g->animations));
     array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_EXAMPLE, g->w, g->r, g->te));
-    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_FLASHER, g->w, g->r, g->te));
+//    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_FLASHER, g->w, g->r, g->te));
+    array_push_back(&(g->animations), (void*) init_animation(ANIMATION_TYPE_PEAK, g->w, g->r, g->te));
     
     /* Main game loop. */
     while (running)

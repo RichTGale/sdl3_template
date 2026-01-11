@@ -26,6 +26,16 @@ struct {
     int current_colour;
 } flasher_animation;
 
+struct {
+    render_target* col_disconnected;
+    render_target* col_connected;
+    render_target* col_hover;
+    render_target* txt_connected;    // The text
+    render_target* txt_disconnected;    // The text
+    char* txt;
+    bool connected;
+} peak_animation;
+
 animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, SDL_Renderer* r, TTF_TextEngine* te)
 {
     SDL_FRect text_src;
@@ -116,6 +126,42 @@ animation* init_animation(enum AnimationTypes animation_type, SDL_Window* win, S
             array_push_back(&(flasher_animation.colours), (void*) flasher_animation.colour_08);
 
             break;
+
+        case ANIMATION_TYPE_PEAK:
+
+            fsout(stdout, "Creating the Peak animation\n");
+            
+            /* Get the window size. */
+            if (!SDL_GetWindowSizeInPixels(win, &win_w, &win_h))
+            {
+                fsout(stdout, "init_animations() failure: %s\n", SDL_GetError());
+            }
+            
+            /* Position the text afterwards because it needs to be created before we can get its width and height. */
+            peak_animation.txt_disconnected  = init_render_target_text(te, 4, "./fonts/Inconsolata-Regular.ttf", "Peak --> Disconnected", 0, 0, 255, 255, 255, 100);
+            peak_animation.txt_connected  = init_render_target_text(te, 4, "./fonts/Inconsolata-Regular.ttf", "Peak --> Connected", 0, 0, 255, 255, 255, 100);
+            
+            /* Position the text. */
+            text_src = get_render_target_src(*(peak_animation.txt_connected));
+            set_render_target_src(peak_animation.txt_connected, 0, 0);
+            text_src = get_render_target_src(*(peak_animation.txt_disconnected));
+            set_render_target_src(peak_animation.txt_disconnected, 0, 0);
+
+            text_src = get_render_target_src(*(peak_animation.txt_disconnected));
+            
+            /* Create the images. */
+            peak_animation.col_disconnected = init_render_target_image(r, 3, "./img/terafox-pallette/red_0.png", 
+                    (int )text_src.x, (int) text_src.y, (int) text_src.w, (int) text_src.h);
+            peak_animation.col_connected = init_render_target_image(r, 3, "./img/terafox-pallette/green_3.png", 
+                    (int )text_src.x, (int) text_src.y, (int) text_src.w, (int) text_src.h);
+            peak_animation.col_hover = init_render_target_image(r, 3, "./img/terafox-pallette/green_2.png", 
+                    (int )text_src.x, (int) text_src.y, (int) text_src.w, (int) text_src.h);
+
+            /* Add the render targets to the animation render target array. */
+            array_push_back(&(ani->render_targets), (void*) peak_animation.txt_disconnected);
+            array_push_back(&(ani->render_targets), (void*) peak_animation.col_disconnected);
+
+            peak_animation.connected = false;
     }
 
     return ani;
@@ -150,6 +196,36 @@ bool animation_clicked(animation* ani, int x, int y)
             break;
         case ANIMATION_TYPE_FLASHER:
             break;
+        case ANIMATION_TYPE_PEAK:
+            for (int i = 0; i < array_size(ani->render_targets); i++)
+            {
+                rt = (render_target*) array_get_data(ani->render_targets, i);
+                if ((x >= rt->src.x && x <= rt->src.x + rt->src.w) &&
+                    (y >= rt->src.y && y <= rt->src.y + rt->src.h))
+                {
+                    if (rt == peak_animation.col_disconnected)
+                    {
+                        array_set_data(&(ani->render_targets), i, peak_animation.col_connected);
+                        system("aconnect 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
+	                    peak_animation.connected = true; // TODO: Assert that it is connected.
+                    }
+                    else if (rt == peak_animation.col_connected)
+                    {
+                        array_set_data(&(ani->render_targets), i, peak_animation.col_disconnected);
+                        system("aconnect -d 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
+                        peak_animation.connected = false; // TODO: assert that it is disconnected.
+                    }
+                    if (rt == peak_animation.txt_connected)
+                    {
+                        array_set_data(&(ani->render_targets), i, peak_animation.txt_disconnected);
+                    }
+                    else if (rt == peak_animation.txt_disconnected)
+                    {
+                        array_set_data(&(ani->render_targets), i, peak_animation.txt_connected);
+                    }
+                }
+            }
+            break;
     }
 
     return clicked;
@@ -182,6 +258,8 @@ void animation_run(animation* ani)
 	        timer_nano_reinit(flasher_animation.timer);
 	    }
 	    break;
+        case ANIMATION_TYPE_PEAK:
+        break;
     }
 }
 
@@ -202,17 +280,40 @@ void animation_hovered(animation* ani, int x, int y)
                     if (rt == example_animation.test_btn_02_not_hovered)
                     {
                         array_set_data(&(ani->render_targets), i, example_animation.test_btn_02_hovered);
-                        system("aconnect 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
                     }
                 }
                 else if (rt == example_animation.test_btn_02_hovered)
                 {
                         array_set_data(&(ani->render_targets), i, example_animation.test_btn_02_not_hovered);
-                        system("aconnect -d 'MPK mini 3':'MPK mini 3 MIDI 1' 'Peak':'Peak MIDI 1     ' > /dev/null 2>&1");
                 }
             }
             break;
         case ANIMATION_TYPE_FLASHER:
+            break;
+        case ANIMATION_TYPE_PEAK:
+            for (int i = 0; i < array_size(ani->render_targets); i++)
+            {
+                rt = (render_target*) array_get_data(ani->render_targets, i);
+                if ((x >= rt->src.x && x <= rt->src.x + rt->src.w) &&
+                    (y >= rt->src.y && y <= rt->src.y + rt->src.h))
+                {
+                    if (rt == peak_animation.col_disconnected)
+                    {
+//                        array_set_data(&(ani->render_targets), i, peak_animation.col_hover);
+                    }
+                }
+                else if (rt == peak_animation.col_hover)
+                {
+                    if (peak_animation.connected)
+                    {
+//                        array_set_data(&(ani->render_targets), i, peak_animation.col_connected);
+                    }
+                    else
+                    {
+//                        array_set_data(&(ani->render_targets), i, peak_animation.col_disconnected);
+                    }
+                }
+            }
             break;
     }
 }
@@ -247,6 +348,13 @@ void term_animation(animation* ani)
             term_render_target(flasher_animation.colour_08);
             array_free(&(flasher_animation.colours));
             timer_nano_term(flasher_animation.timer);
+            break;
+        case ANIMATION_TYPE_PEAK:
+            term_render_target(peak_animation.col_disconnected);
+            term_render_target(peak_animation.col_connected);
+            term_render_target(peak_animation.col_hover);
+            term_render_target(peak_animation.txt_disconnected);
+            term_render_target(peak_animation.txt_connected);
             break;
     }
 
